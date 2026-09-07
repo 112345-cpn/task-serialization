@@ -1,0 +1,175 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/test/jmh-mv/jmh-core-1.37.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# JMH version: 1.37
+# VM version: JDK 25.0.4-internal, OpenJDK 64-Bit Server VM, 25.0.4-internal-adhoc.test.TencentKona-25-master
+# VM invoker: /home/test/kona-images/opt1/bin/java
+# VM options: <none>
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 8 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.kona.bench.SerializationBench.roundtripOrders
+# Parameters: (arrayLen = 32, bosInitialCap = 65536, listSize = 1000)
+
+# Run progress: 0.00% complete, ETA 00:01:16
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/test/jmh-mv/jmh-core-1.37.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 1875.631 ops/s
+# Warmup Iteration   2: 2312.345 ops/s
+# Warmup Iteration   3: 2466.342 ops/s
+Iteration   1: 2589.162 ops/s
+Iteration   2: 2615.072 ops/s
+Iteration   3: 2611.465 ops/s
+Iteration   4: 2659.827 ops/s
+Iteration   5: 2666.349 ops/s
+Iteration   6: 2688.977 ops/s
+Iteration   7: 2651.588 ops/s
+Iteration   8: 2663.613 ops/s
+
+
+Result "com.kona.bench.SerializationBench.roundtripOrders":
+  2643.257 ±(99.9%) 65.093 ops/s [Average]
+  (min, avg, max) = (2589.162, 2643.257, 2688.977), stdev = 34.045
+  CI (99.9%): [2578.164, 2708.349] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4-internal, OpenJDK 64-Bit Server VM, 25.0.4-internal-adhoc.test.TencentKona-25-master
+# VM invoker: /home/test/kona-images/opt1/bin/java
+# VM options: <none>
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 8 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.kona.bench.SerializationBench.serializeIntBox
+# Parameters: (arrayLen = 32, bosInitialCap = 65536, listSize = 1000)
+
+# Run progress: 25.00% complete, ETA 00:00:57
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/test/jmh-mv/jmh-core-1.37.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 983881.624 ops/s
+# Warmup Iteration   2: 1770749.330 ops/s
+# Warmup Iteration   3: 1887264.768 ops/s
+Iteration   1: 1899859.109 ops/s
+Iteration   2: 1861726.096 ops/s
+Iteration   3: 1887336.905 ops/s
+Iteration   4: 1880108.270 ops/s
+Iteration   5: 1884728.342 ops/s
+Iteration   6: 1880581.773 ops/s
+Iteration   7: 1873685.469 ops/s
+Iteration   8: 1885786.998 ops/s
+
+
+Result "com.kona.bench.SerializationBench.serializeIntBox":
+  1881726.620 ±(99.9%) 21123.034 ops/s [Average]
+  (min, avg, max) = (1861726.096, 1881726.620, 1899859.109), stdev = 11047.755
+  CI (99.9%): [1860603.586, 1902849.654] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4-internal, OpenJDK 64-Bit Server VM, 25.0.4-internal-adhoc.test.TencentKona-25-master
+# VM invoker: /home/test/kona-images/opt1/bin/java
+# VM options: <none>
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 8 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.kona.bench.SerializationBench.serializeOrders
+# Parameters: (arrayLen = 32, bosInitialCap = 65536, listSize = 1000)
+
+# Run progress: 50.00% complete, ETA 00:00:38
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/test/jmh-mv/jmh-core-1.37.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 5462.132 ops/s
+# Warmup Iteration   2: 5962.705 ops/s
+# Warmup Iteration   3: 6159.507 ops/s
+Iteration   1: 6232.696 ops/s
+Iteration   2: 6209.637 ops/s
+Iteration   3: 6180.880 ops/s
+Iteration   4: 6196.372 ops/s
+Iteration   5: 6186.074 ops/s
+Iteration   6: 6198.921 ops/s
+Iteration   7: 6220.455 ops/s
+Iteration   8: 6172.742 ops/s
+
+
+Result "com.kona.bench.SerializationBench.serializeOrders":
+  6199.722 ±(99.9%) 38.893 ops/s [Average]
+  (min, avg, max) = (6172.742, 6199.722, 6232.696), stdev = 20.342
+  CI (99.9%): [6160.829, 6238.615] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4-internal, OpenJDK 64-Bit Server VM, 25.0.4-internal-adhoc.test.TencentKona-25-master
+# VM invoker: /home/test/kona-images/opt1/bin/java
+# VM options: <none>
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 8 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.kona.bench.SerializationBench.serializeSingle
+# Parameters: (arrayLen = 32, bosInitialCap = 65536, listSize = 1000)
+
+# Run progress: 75.00% complete, ETA 00:00:19
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/test/jmh-mv/jmh-core-1.37.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 966876.550 ops/s
+# Warmup Iteration   2: 1655583.577 ops/s
+# Warmup Iteration   3: 1729126.010 ops/s
+Iteration   1: 1732159.844 ops/s
+Iteration   2: 1723355.196 ops/s
+Iteration   3: 1715525.474 ops/s
+Iteration   4: 1678497.746 ops/s
+Iteration   5: 1703079.000 ops/s
+Iteration   6: 1702761.907 ops/s
+Iteration   7: 1596304.587 ops/s
+Iteration   8: 1611386.601 ops/s
+
+
+Result "com.kona.bench.SerializationBench.serializeSingle":
+  1682883.794 ±(99.9%) 98455.647 ops/s [Average]
+  (min, avg, max) = (1596304.587, 1682883.794, 1732159.844), stdev = 51494.207
+  CI (99.9%): [1584428.147, 1781339.442] (assumes normal distribution)
+
+
+# Run complete. Total time: 00:01:17
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+NOTE: Current JVM experimentally supports Compiler Blackholes, and they are in use. Please exercise
+extra caution when trusting the results, look into the generated code to check the benchmark still
+works, and factor in a small probability of new VM bugs. Additionally, while comparisons between
+different JVMs are already problematic, the performance difference caused by different Blackhole
+modes can be very significant. Please make sure you use the consistent Blackhole mode for comparisons.
+
+Benchmark                           (arrayLen)  (bosInitialCap)  (listSize)   Mode  Cnt        Score       Error  Units
+SerializationBench.roundtripOrders          32            65536        1000  thrpt    8     2643.257 ±    65.093  ops/s
+SerializationBench.serializeIntBox          32            65536        1000  thrpt    8  1881726.620 ± 21123.034  ops/s
+SerializationBench.serializeOrders          32            65536        1000  thrpt    8     6199.722 ±    38.893  ops/s
+SerializationBench.serializeSingle          32            65536        1000  thrpt    8  1682883.794 ± 98455.647  ops/s

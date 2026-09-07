@@ -11,17 +11,30 @@ JDK 源码改动在 Kona fork 仓库进行，本仓库存放基准、数据与�
 ## 当前状态
 
 - **任务 2.1（获取基准）：已完成** —— JMH 基线 7 项 + jtreg 功能验证 150/150 + profiler 热点分析
-- 任务 2.2（优化实现）：进行中
-- 任务 2.3（对比与迭代）：未开始
+- **任务 2.2（优化实现）：已完成** —— 三项优化全部落地，Serializable/ObjectInputStream/ObjectStreamClass jtreg 全绿
+- **任务 2.3（对比与迭代）：已完成** —— 多轮 JMH 对比、单对象回退排查与惰性缓存改进、GC 分配分析
 
 ## 仓库内容
 
 - `BASELINE.md`：任务 2.1 基线报告——基准设计、基线数据、profiler 实测热点、jtreg 结果
 - `PLAN-2.2.md`：任务 2.2 优化方案——基于实测热点定稿的三个优化项及验证流程
+- `OPTIMIZATION.md`：任务 2.2/2.3 优化报告——改动、逐项验证、JMH 结果与迭代分析
 - `bench/SerializationBench.java`：JMH 1.37 基准程序（7 个 benchmark，序列化/反序列化/往返分离）
 - `baseline-release.txt`：JMH 基线原始输出（release 构建）
 - `profile-stack.txt`：JMH `-prof stack` 采样原始输出
 - `jtreg-serializable.txt`：jtreg Serializable 测试摘要（150/150 Passed）
+- `results/2.2/`：任务 2.2/2.3 各轮 JMH 原始输出
+
+JDK 源码改动位于 Kona fork 仓库 `task-serialization` 分支
+（`D:\TencentKona-25-task`，4 个提交），提交号见 `OPTIMIZATION.md`。
+
+## 优化结论速览
+
+- 批量写（serializeOrders 1000）：配对/归一化后约 **+5~9%**
+- 往返（roundtripOrders 1000）：约 **+2~5%**
+- 反序列化（deserializeOrders 1000）：吞吐 +1~3%，**每操作分配 -24.1%**
+- serializeSingle：-2~-6%（每 op 新建流的构造开销 + JIT 布局变化，见 OPTIMIZATION.md 第六节）
+- jtreg：Serializable 150/150、ObjectInputStream 4/4、ObjectStreamClass 6/6 全部通过
 
 ## 环境
 

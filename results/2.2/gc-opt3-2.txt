@@ -1,0 +1,328 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/test/jmh-mv/jmh-core-1.37.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# JMH version: 1.37
+# VM version: JDK 25.0.4-internal, OpenJDK 64-Bit Server VM, 25.0.4-internal-adhoc.test.TencentKona-25-master
+# VM invoker: /home/test/kona-images/opt3/bin/java
+# VM options: <none>
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 8 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.kona.bench.SerializationBench.deserializeOrders
+# Parameters: (arrayLen = 32, bosInitialCap = 65536, listSize = 1000)
+
+# Run progress: 0.00% complete, ETA 00:00:57
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/test/jmh-mv/jmh-core-1.37.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 3637.959 ops/s
+# Warmup Iteration   2: 4407.377 ops/s
+# Warmup Iteration   3: 4721.339 ops/s
+Iteration   1: 4759.406 ops/s
+                 gc.alloc.rate:      1142.257 MB/sec
+                 gc.alloc.rate.norm: 251688.741 B/op
+                 gc.count:           17.000 counts
+                 gc.time:            17.000 ms
+
+Iteration   2: 4761.282 ops/s
+                 gc.alloc.rate:      1142.673 MB/sec
+                 gc.alloc.rate.norm: 251688.739 B/op
+                 gc.count:           17.000 counts
+                 gc.time:            18.000 ms
+
+Iteration   3: 4750.717 ops/s
+                 gc.alloc.rate:      1140.066 MB/sec
+                 gc.alloc.rate.norm: 251688.743 B/op
+                 gc.count:           17.000 counts
+                 gc.time:            18.000 ms
+
+Iteration   4: 4752.580 ops/s
+                 gc.alloc.rate:      1140.519 MB/sec
+                 gc.alloc.rate.norm: 251688.742 B/op
+                 gc.count:           18.000 counts
+                 gc.time:            21.000 ms
+
+Iteration   5: 4784.034 ops/s
+                 gc.alloc.rate:      1148.143 MB/sec
+                 gc.alloc.rate.norm: 251688.737 B/op
+                 gc.count:           17.000 counts
+                 gc.time:            17.000 ms
+
+Iteration   6: 4749.008 ops/s
+                 gc.alloc.rate:      1139.674 MB/sec
+                 gc.alloc.rate.norm: 251688.743 B/op
+                 gc.count:           17.000 counts
+                 gc.time:            20.000 ms
+
+Iteration   7: 4779.821 ops/s
+                 gc.alloc.rate:      1147.146 MB/sec
+                 gc.alloc.rate.norm: 251688.738 B/op
+                 gc.count:           17.000 counts
+                 gc.time:            19.000 ms
+
+Iteration   8: 4724.335 ops/s
+                 gc.alloc.rate:      1133.797 MB/sec
+                 gc.alloc.rate.norm: 251688.746 B/op
+                 gc.count:           17.000 counts
+                 gc.time:            17.000 ms
+
+
+
+Result "com.kona.bench.SerializationBench.deserializeOrders":
+  4757.648 ±(99.9%) 35.859 ops/s [Average]
+  (min, avg, max) = (4724.335, 4757.648, 4784.034), stdev = 18.755
+  CI (99.9%): [4721.789, 4793.507] (assumes normal distribution)
+
+Secondary result "com.kona.bench.SerializationBench.deserializeOrders:gc.alloc.rate":
+  1141.784 ±(99.9%) 8.642 MB/sec [Average]
+  (min, avg, max) = (1133.797, 1141.784, 1148.143), stdev = 4.520
+  CI (99.9%): [1133.142, 1150.426] (assumes normal distribution)
+
+Secondary result "com.kona.bench.SerializationBench.deserializeOrders:gc.alloc.rate.norm":
+  251688.741 ±(99.9%) 0.006 B/op [Average]
+  (min, avg, max) = (251688.737, 251688.741, 251688.746), stdev = 0.003
+  CI (99.9%): [251688.736, 251688.747] (assumes normal distribution)
+
+Secondary result "com.kona.bench.SerializationBench.deserializeOrders:gc.count":
+  137.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (17.000, 17.125, 18.000), stdev = 0.354
+  CI (99.9%): [137.000, 137.000] (assumes normal distribution)
+
+Secondary result "com.kona.bench.SerializationBench.deserializeOrders:gc.time":
+  147.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (17.000, 18.375, 21.000), stdev = 1.506
+  CI (99.9%): [147.000, 147.000] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4-internal, OpenJDK 64-Bit Server VM, 25.0.4-internal-adhoc.test.TencentKona-25-master
+# VM invoker: /home/test/kona-images/opt3/bin/java
+# VM options: <none>
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 8 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.kona.bench.SerializationBench.deserializeSingle
+# Parameters: (arrayLen = 32, bosInitialCap = 65536, listSize = 1000)
+
+# Run progress: 33.33% complete, ETA 00:00:38
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/test/jmh-mv/jmh-core-1.37.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 336604.083 ops/s
+# Warmup Iteration   2: 440086.367 ops/s
+# Warmup Iteration   3: 461590.758 ops/s
+Iteration   1: 466112.298 ops/s
+                 gc.alloc.rate:      1724.387 MB/sec
+                 gc.alloc.rate.norm: 3880.008 B/op
+                 gc.count:           23.000 counts
+                 gc.time:            26.000 ms
+
+Iteration   2: 463383.200 ops/s
+                 gc.alloc.rate:      1714.412 MB/sec
+                 gc.alloc.rate.norm: 3880.008 B/op
+                 gc.count:           23.000 counts
+                 gc.time:            25.000 ms
+
+Iteration   3: 461068.778 ops/s
+                 gc.alloc.rate:      1705.698 MB/sec
+                 gc.alloc.rate.norm: 3880.008 B/op
+                 gc.count:           23.000 counts
+                 gc.time:            24.000 ms
+
+Iteration   4: 463351.612 ops/s
+                 gc.alloc.rate:      1714.320 MB/sec
+                 gc.alloc.rate.norm: 3880.008 B/op
+                 gc.count:           23.000 counts
+                 gc.time:            25.000 ms
+
+Iteration   5: 463317.443 ops/s
+                 gc.alloc.rate:      1714.143 MB/sec
+                 gc.alloc.rate.norm: 3880.008 B/op
+                 gc.count:           23.000 counts
+                 gc.time:            25.000 ms
+
+Iteration   6: 463493.341 ops/s
+                 gc.alloc.rate:      1714.726 MB/sec
+                 gc.alloc.rate.norm: 3880.008 B/op
+                 gc.count:           23.000 counts
+                 gc.time:            25.000 ms
+
+Iteration   7: 464866.106 ops/s
+                 gc.alloc.rate:      1719.796 MB/sec
+                 gc.alloc.rate.norm: 3880.008 B/op
+                 gc.count:           24.000 counts
+                 gc.time:            26.000 ms
+
+Iteration   8: 466370.841 ops/s
+                 gc.alloc.rate:      1725.473 MB/sec
+                 gc.alloc.rate.norm: 3880.008 B/op
+                 gc.count:           23.000 counts
+                 gc.time:            24.000 ms
+
+
+
+Result "com.kona.bench.SerializationBench.deserializeSingle":
+  463995.452 ±(99.9%) 3307.548 ops/s [Average]
+  (min, avg, max) = (461068.778, 463995.452, 466370.841), stdev = 1729.912
+  CI (99.9%): [460687.904, 467303.000] (assumes normal distribution)
+
+Secondary result "com.kona.bench.SerializationBench.deserializeSingle:gc.alloc.rate":
+  1716.619 ±(99.9%) 12.263 MB/sec [Average]
+  (min, avg, max) = (1705.698, 1716.619, 1725.473), stdev = 6.414
+  CI (99.9%): [1704.356, 1728.883] (assumes normal distribution)
+
+Secondary result "com.kona.bench.SerializationBench.deserializeSingle:gc.alloc.rate.norm":
+  3880.008 ±(99.9%) 0.001 B/op [Average]
+  (min, avg, max) = (3880.008, 3880.008, 3880.008), stdev = 0.001
+  CI (99.9%): [3880.008, 3880.008] (assumes normal distribution)
+
+Secondary result "com.kona.bench.SerializationBench.deserializeSingle:gc.count":
+  185.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (23.000, 23.125, 24.000), stdev = 0.354
+  CI (99.9%): [185.000, 185.000] (assumes normal distribution)
+
+Secondary result "com.kona.bench.SerializationBench.deserializeSingle:gc.time":
+  200.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (24.000, 25.000, 26.000), stdev = 0.756
+  CI (99.9%): [200.000, 200.000] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4-internal, OpenJDK 64-Bit Server VM, 25.0.4-internal-adhoc.test.TencentKona-25-master
+# VM invoker: /home/test/kona-images/opt3/bin/java
+# VM options: <none>
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 8 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.kona.bench.SerializationBench.roundtripOrders
+# Parameters: (arrayLen = 32, bosInitialCap = 65536, listSize = 1000)
+
+# Run progress: 66.67% complete, ETA 00:00:19
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/test/jmh-mv/jmh-core-1.37.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: 2038.215 ops/s
+# Warmup Iteration   2: 2363.738 ops/s
+# Warmup Iteration   3: 2508.205 ops/s
+Iteration   1: 2528.122 ops/s
+                 gc.alloc.rate:      1136.114 MB/sec
+                 gc.alloc.rate.norm: 471305.395 B/op
+                 gc.count:           17.000 counts
+                 gc.time:            20.000 ms
+
+Iteration   2: 2559.975 ops/s
+                 gc.alloc.rate:      1150.407 MB/sec
+                 gc.alloc.rate.norm: 471305.371 B/op
+                 gc.count:           17.000 counts
+                 gc.time:            19.000 ms
+
+Iteration   3: 2542.281 ops/s
+                 gc.alloc.rate:      1142.447 MB/sec
+                 gc.alloc.rate.norm: 471305.387 B/op
+                 gc.count:           18.000 counts
+                 gc.time:            19.000 ms
+
+Iteration   4: 2550.681 ops/s
+                 gc.alloc.rate:      1146.321 MB/sec
+                 gc.alloc.rate.norm: 471305.381 B/op
+                 gc.count:           17.000 counts
+                 gc.time:            19.000 ms
+
+Iteration   5: 2557.008 ops/s
+                 gc.alloc.rate:      1149.173 MB/sec
+                 gc.alloc.rate.norm: 471305.379 B/op
+                 gc.count:           18.000 counts
+                 gc.time:            20.000 ms
+
+Iteration   6: 2499.336 ops/s
+                 gc.alloc.rate:      1123.220 MB/sec
+                 gc.alloc.rate.norm: 471305.411 B/op
+                 gc.count:           17.000 counts
+                 gc.time:            19.000 ms
+
+Iteration   7: 2500.975 ops/s
+                 gc.alloc.rate:      1123.885 MB/sec
+                 gc.alloc.rate.norm: 471305.410 B/op
+                 gc.count:           17.000 counts
+                 gc.time:            19.000 ms
+
+Iteration   8: 2483.286 ops/s
+                 gc.alloc.rate:      1116.006 MB/sec
+                 gc.alloc.rate.norm: 471305.413 B/op
+                 gc.count:           17.000 counts
+                 gc.time:            18.000 ms
+
+
+
+Result "com.kona.bench.SerializationBench.roundtripOrders":
+  2527.708 ±(99.9%) 56.594 ops/s [Average]
+  (min, avg, max) = (2483.286, 2527.708, 2559.975), stdev = 29.600
+  CI (99.9%): [2471.114, 2584.302] (assumes normal distribution)
+
+Secondary result "com.kona.bench.SerializationBench.roundtripOrders:gc.alloc.rate":
+  1135.947 ±(99.9%) 25.437 MB/sec [Average]
+  (min, avg, max) = (1116.006, 1135.947, 1150.407), stdev = 13.304
+  CI (99.9%): [1110.509, 1161.384] (assumes normal distribution)
+
+Secondary result "com.kona.bench.SerializationBench.roundtripOrders:gc.alloc.rate.norm":
+  471305.393 ±(99.9%) 0.031 B/op [Average]
+  (min, avg, max) = (471305.371, 471305.393, 471305.413), stdev = 0.016
+  CI (99.9%): [471305.362, 471305.424] (assumes normal distribution)
+
+Secondary result "com.kona.bench.SerializationBench.roundtripOrders:gc.count":
+  138.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (17.000, 17.250, 18.000), stdev = 0.463
+  CI (99.9%): [138.000, 138.000] (assumes normal distribution)
+
+Secondary result "com.kona.bench.SerializationBench.roundtripOrders:gc.time":
+  153.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (18.000, 19.125, 20.000), stdev = 0.641
+  CI (99.9%): [153.000, 153.000] (assumes normal distribution)
+
+
+# Run complete. Total time: 00:00:57
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+NOTE: Current JVM experimentally supports Compiler Blackholes, and they are in use. Please exercise
+extra caution when trusting the results, look into the generated code to check the benchmark still
+works, and factor in a small probability of new VM bugs. Additionally, while comparisons between
+different JVMs are already problematic, the performance difference caused by different Blackhole
+modes can be very significant. Please make sure you use the consistent Blackhole mode for comparisons.
+
+Benchmark                                                (arrayLen)  (bosInitialCap)  (listSize)   Mode  Cnt       Score      Error   Units
+SerializationBench.deserializeOrders                             32            65536        1000  thrpt    8    4757.648 ±   35.859   ops/s
+SerializationBench.deserializeOrders:gc.alloc.rate               32            65536        1000  thrpt    8    1141.784 ±    8.642  MB/sec
+SerializationBench.deserializeOrders:gc.alloc.rate.norm          32            65536        1000  thrpt    8  251688.741 ±    0.006    B/op
+SerializationBench.deserializeOrders:gc.count                    32            65536        1000  thrpt    8     137.000             counts
+SerializationBench.deserializeOrders:gc.time                     32            65536        1000  thrpt    8     147.000                 ms
+SerializationBench.deserializeSingle                             32            65536        1000  thrpt    8  463995.452 ± 3307.548   ops/s
+SerializationBench.deserializeSingle:gc.alloc.rate               32            65536        1000  thrpt    8    1716.619 ±   12.263  MB/sec
+SerializationBench.deserializeSingle:gc.alloc.rate.norm          32            65536        1000  thrpt    8    3880.008 ±    0.001    B/op
+SerializationBench.deserializeSingle:gc.count                    32            65536        1000  thrpt    8     185.000             counts
+SerializationBench.deserializeSingle:gc.time                     32            65536        1000  thrpt    8     200.000                 ms
+SerializationBench.roundtripOrders                               32            65536        1000  thrpt    8    2527.708 ±   56.594   ops/s
+SerializationBench.roundtripOrders:gc.alloc.rate                 32            65536        1000  thrpt    8    1135.947 ±   25.437  MB/sec
+SerializationBench.roundtripOrders:gc.alloc.rate.norm            32            65536        1000  thrpt    8  471305.393 ±    0.031    B/op
+SerializationBench.roundtripOrders:gc.count                      32            65536        1000  thrpt    8     138.000             counts
+SerializationBench.roundtripOrders:gc.time                       32            65536        1000  thrpt    8     153.000                 ms
