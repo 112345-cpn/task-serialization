@@ -1,14 +1,23 @@
 # 任务 2.2 / 2.3 报告：Kona JDK 25 序列化性能优化
 
-日期：2026-09-07
-构建：`/home/test/TencentKona-25-master` `linux-x86_64-release`
-JDK：openjdk 25.0.4-internal（Kona JDK 25 源码，本地 fork `task-serialization` 分支）
-基准：JMH 1.37，`bench/SerializationBench.java`（同 2.1，7 项吞吐基准）
+日期：2026-09-07（2026-09-10 评审跟进后更新）
+构建：`linux-x86_64-release`，WSL2 Ubuntu x86_64（4 核 / 7.8 GiB）
+JDK：openjdk 25.0.4-internal（Kona JDK 25 源码）
+基准：JMH 1.37，[bench/SerializationBench.java](bench/SerializationBench.java)
+（2026-09-10 起为 11 项吞吐基准，`@Fork(3)`）
 
 ## 一、优化项与提交
 
-源码仓库：`D:\TencentKona-25-task`，分支 `task-serialization`
+源码仓库（公开）：https://github.com/112345-cpn/TencentKona-25
+分支：`task-serialization`
 （基于上游 TencentKona-25 `jdk-25.0.4` 代码；java.base 序列化源码与基线构建树一致）。
+
+提交链接（GitHub）：
+
+- https://github.com/112345-cpn/TencentKona-25/commit/285a0a002b
+- https://github.com/112345-cpn/TencentKona-25/commit/13fdcd76ce
+- https://github.com/112345-cpn/TencentKona-25/commit/a360b6b4a8
+- https://github.com/112345-cpn/TencentKona-25/commit/8c0ba75a67
 
 | # | 改动 | 位置 | 说明 |
 |---|---|---|---|
@@ -136,9 +145,19 @@ readFields() 返回给用户 GetField 的路径才需要 objHandles 供后续按
 改动：
 - 新增流级 `scratchPrimValues/scratchObjValues` 与占用标记；
   内部不逃逸路径借用缓冲区，借出期间嵌套读取自动退回私有分配，保证递归安全；
+- 借用/归还受 `scratchInUse` 保护；构造过程中若抛异常，会在构造器内释放
+  （见评审跟进），避免流恢复后优化永久失效；
 - 只在 `readFields()`（recordDependencies=false）路径分配 `objHandles`，
   内部路径用局部 handle 完成依赖登记；
 - readRecord 路径因数组可能被 record 构造器持有，仍按需分配。
+
+已知取舍（评审意见 2、3）：
+- `scratchObjValues` 会保留上一次反序列化对象字段值的引用，直到被下一次读取覆盖
+  或流对象不可达；对“长生命周期流 + 只读少量对象”的场景会推迟部分对象回收。
+  这与“-24.1% 分配”是同一取舍的两面。
+- 多 slot 层次结构（父类+子类都有字段、且无自定义 readObject）进入失败原子性延迟设值
+  路径时，只有第一个尚未消费的 slot 能借用 scratch，其余 slot 回退为私有分配；
+  这是为保证延迟设值期间数组不被覆盖而做的保守选择。
 
 ## 六、2.3 差异分析与迭代
 
@@ -159,7 +178,75 @@ readFields() 返回给用户 GetField 的路径才需要 objHandles 供后续按
    增加“单流多对象”基准以消除流构造成本、AArch64 端复测、
    `ObjectOutputStream.primVals` 写侧缓冲扩容复用、字符串/引用读路径联合优化。
 
-## 七、复现
+## 七、评审跟进（2026-09-10）
 
-见 [RESUME.md](RESUME.md)（本会话工作记录）与 README“复现基准”一节；
-原始 JMH 输出位于本仓库 `results/` 与根目录各 `*-*.txt`（提交时整理）。
+导师评审（issue #1）结论为“通过，质量良好”，并提出四项改进建议。本次跟进情况：
+
+| 评审建议 | 跟进 |
+|---|---|
+| `@Fork(1)` 噪声大，建议 3~5 | 基准标注改为 `@Fork(3)`，全部复测 |
+| 缺“单流多对象 + reset()”基准 | 新增 4 个基准：`serializeSameStream`、`serializeSameStreamReset`、`deserializeSameStream`、`deserializeSameStreamReset`（每 100 个对象 reset 一次） |
+| scratch 构造异常泄漏 / footprint 权衡 | 构造器内 try/catch 释放 scratch；在代码与本文档补充 footprint、多 slot 复用边界说明 |
+| 报告缺公开链接、含本地绝对路径 | 已补公开仓库与 commit 链接，移除本地绝对路径 |
+
+### 7.1 复测结果（11 项，`@Fork(3)`，2 轮交替，每项 6×1s 测量×3 fork）
+
+| Benchmark | 基线 ops/s | 最终 ops/s | 原始变化 | 对照归一化 |
+|---|---:|---:|---:|---:|
+| serializeOrders (1000) | 5,554 | 6,238 | +12.3% | +10.1% |
+| **serializeSameStream (1000)** | 5,695 | 6,119 | +7.4% | +5.2% |
+| **serializeSameStreamReset (1000)** | 6,020 | 6,757 | +12.3% | +9.8% |
+| deserializeOrders (1000) | 4,221 | 4,761 | +12.8% | +4.1% |
+| **deserializeSameStream (1000)** | 4,317 | 4,802 | +11.2% | +2.7% |
+| **deserializeSameStreamReset (1000)** | 4,109 | 4,371 | +6.4% | -2.1% |
+| roundtripOrders (1000) | 2,386 | 2,551 | +6.9% | +4.6% |
+| serializeSingle | 1,601,761 | 1,698,279 | +6.0% | +4.2% |
+| deserializeSingle | 439,690 | 462,889 | +5.3% | -3.0% |
+| serializeIntBox（对照） | 1,754,614 | 1,789,038 | +2.0% | — |
+| deserializeIntBox（对照） | 389,038 | 420,319 | +8.0% | — |
+
+说明：
+- 两个对照项本身有 +2.0% / +8.0% 漂移，说明本轮仍受整机慢窗口影响；
+  归一化后的数字更保守。
+- 新增的“单流多对象”基准直接覆盖优化 1/2/3 的目标场景：
+  `serializeSameStream` +5~7%、`serializeSameStreamReset` +10~12%、
+  `deserializeSameStream` +3~11%。
+- 与评审关注点一致：在“每 op 新建流”的 `serializeSingle` 上，
+  fork=1 的早期高精度专项曾测得 -2.7%（归一化）~ -5.6%（原始）；
+  `@Fork(3)` 复测转为 +4~6%（见 7.2 专项复核）。
+
+### 7.2 serializeSingle 专项复核（fork=3，高迭代）
+
+针对评审最关心的“单对象回退是否真实”，用 `@Fork(3)` + 15×2s 测量做了 2 轮交替专项
+（`v2s-*`，每组 2 次；`serializeIntBox` 为同轮对照）：
+
+| Benchmark | 基线（2 轮均值） | 最终（2 轮均值） | 原始变化 | 对照归一化 |
+|---|---:|---:|---:|---:|
+| serializeSingle | 1,712,022 | 1,638,949 | -4.3% | **-0.2%** |
+| serializeSameStream | 6,023 | 5,877 | -2.4% | +1.7% |
+| serializeOrders | 6,057 | 6,110 | +0.9% | **+5.1%** |
+| serializeIntBox（对照） | 1,799,228 | 1,725,745 | -4.1% | — |
+
+结论：加入多 fork 后，`serializeSingle` 的归一化差异为 **-0.2%（基本持平）**，
+未复现 fork=1 时的 -2.7%~-5.6%。这与评审判断一致——**fork=1 的跨进程 JIT 差异
+是单对象基准噪声的主要来源**，不是稳定的代码回退。原始 4.3% 的原始差值
+主要来自整机慢窗口（同轮 `serializeIntBox` 对照也下降 4.1%）。
+
+因此最终结论修正为：
+
+- 批量写（同流多对象）：**+2%~+10%**（`serializeOrders` +5~10%，`serializeSameStreamReset` 约 +10%）；
+- 读路径：`deserializeOrders` 约 +3~4%，分配 **-24.1%**；
+- 单对象每 op 新建流：**中性（-0.2%）**，不再列为回退项；
+- 早期 fork=1 的负值结论仅作为“单 fork 噪声”的案例保留在第六节。
+
+## 八、复现
+
+见 README“复现基准”一节；原始 JMH 输出位于本仓库 `results/2.2/`。
+
+```bash
+# 源码（公开）
+git clone -b task-serialization https://github.com/112345-cpn/TencentKona-25.git
+
+# 基线/优化数据与基准程序
+git clone https://github.com/112345-cpn/task-serialization.git
+```

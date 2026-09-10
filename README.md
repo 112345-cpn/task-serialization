@@ -25,16 +25,20 @@ JDK 源码改动在 Kona fork 仓库进行，本仓库存放基准、数据与�
 - `jtreg-serializable.txt`：jtreg Serializable 测试摘要（150/150 Passed）
 - `results/2.2/`：任务 2.2/2.3 各轮 JMH 原始输出
 
-JDK 源码改动位于 Kona fork 仓库 `task-serialization` 分支
-（`D:\TencentKona-25-task`，4 个提交），提交号见 `OPTIMIZATION.md`。
+JDK 源码改动位于 Kona fork 仓库的 [`task-serialization`](https://github.com/112345-cpn/TencentKona-25/tree/task-serialization)
+分支（4 个提交），提交号见 `OPTIMIZATION.md`。
 
 ## 优化结论速览
 
-- 批量写（serializeOrders 1000）：配对/归一化后约 **+5~9%**
-- 往返（roundtripOrders 1000）：约 **+2~5%**
-- 反序列化（deserializeOrders 1000）：吞吐 +1~3%，**每操作分配 -24.1%**
-- serializeSingle：-2~-6%（每 op 新建流的构造开销 + JIT 布局变化，见 OPTIMIZATION.md 第六节）
+- 批量写（serializeOrders / 单流多对象 1000）：归一化后约 **+5~10%**（`reset()` 变体约 +10%）
+- 往返（roundtripOrders 1000）：约 **+2~7%**
+- 反序列化（deserializeOrders / 单流多对象）：吞吐约 +3~4%，**每操作分配 -24.1%**
+- serializeSingle：`@Fork(3)` 复测后归一化约 **-0.2%（中性）**；fork=1 时的负值是跨进程 JIT 噪声，见 OPTIMIZATION.md 第七节
 - jtreg：Serializable 150/150、ObjectInputStream 4/4、ObjectStreamClass 6/6 全部通过
+
+基准自 2026-09-10 起为 11 项、`@Fork(3)`，新增
+`serializeSameStream`、`serializeSameStreamReset`、`deserializeSameStream`、
+`deserializeSameStreamReset` 四个单流稳态场景。
 
 ## 环境
 
