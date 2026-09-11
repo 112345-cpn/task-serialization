@@ -18,6 +18,7 @@ JDK：openjdk 25.0.4-internal（Kona JDK 25 源码）
 - https://github.com/112345-cpn/TencentKona-25/commit/13fdcd76ce
 - https://github.com/112345-cpn/TencentKona-25/commit/a360b6b4a8
 - https://github.com/112345-cpn/TencentKona-25/commit/8c0ba75a67
+- https://github.com/112345-cpn/TencentKona-25/commit/9daccd8f15
 
 | # | 改动 | 位置 | 说明 |
 |---|---|---|---|
@@ -25,6 +26,7 @@ JDK：openjdk 25.0.4-internal（Kona JDK 25 源码）
 | 优化 1 改进 | 缓存改为“句柄命中时记录” | ObjectOutputStream.java | 减少单对象/冷路径写入开销（见第六节迭代） |
 | 优化 2 | HandleTable spine 扩容策略改 2 的幂，`%` 改位掩码 | ObjectOutputStream.java | lookup/insert 是最内层热点；位掩码去掉整数除法 |
 | 优化 3 | 内部 FieldValues 复用流级缓冲；内部路径不再分配 objHandles | ObjectInputStream.java | defaultReadObject/skip 等不逃逸路径复用 byte[]/Object[]，GetField/readFields/record 仍按需分配 |
+| 评审跟进 | FieldValues 构造失败时释放 scratch 缓冲；补充 footprint 与多 slot 复用注释 | ObjectInputStream.java | 落地评审意见 2/3（见第七节） |
 
 提交（Git 顺序，自旧到新）：
 
@@ -33,6 +35,7 @@ JDK：openjdk 25.0.4-internal（Kona JDK 25 源码）
 13fdcd76ce  优化2：ObjectOutputStream HandleTable spine 容量改 2 的幂并改用位掩码哈希
 a360b6b4a8  优化3：ObjectInputStream 内部 FieldValues 复用流级缓冲并免分配 objHandles
 8c0ba75a67  改进：writeClassDesc 缓存改为句柄命中时记录，降低单对象序列化路径开销
+9daccd8f15  评审跟进：FieldValues 构造失败时释放 scratch 缓冲并补充复用取舍注释
 ```
 
 ## 二、功能回归（jtreg）
@@ -58,8 +61,12 @@ WSL2 环境存在明显的慢速窗口（同一镜像不同时段吞吐可差近
    用 `被测项/对照项` 做归一化后再比较。
 4. 关键存疑结论另做高精度专项（更多 iteration、更长测量窗）。
 
-测量参数（常规）：吞吐模式，fork=1，3×1s 预热 + 8~10×2s 测量。
-高精度专项：5×3s 预热 + 25×3s 测量。
+测量参数：
+
+- 2.1 基线 / 2.2 早期各轮（fork=1）：3×1s 预热 + 8~10×2s 测量。
+- 2.3 高精度专项（fork=1）：5×3s 预热 + 25×3s 测量。
+- 2026-09-10 评审跟进复测（`@Fork(3)`）：11 项 `-f 3 -wi 2 -w 1s -i 6 -r 1s`；
+  `serializeSingle` 专项 `-f 3 -wi 3 -w 1s -i 15 -r 2s`（见第七节）。
 
 ## 四、结果
 
@@ -174,9 +181,9 @@ readFields() 返回给用户 GetField 的路径才需要 objHandles 供后续按
 3. **收益主要来源确认**：serializeOrders/roundtrip 的提升来自优化 1/2
    （免去每对象类描述符哈希查找 + lookup 取模变位掩码）；
    deserializeOrders 的分配 -24% 来自优化 3。
-4. **进一步可做**（超出本任务范围）：更长 iteration 的 CI 化基准、
-   增加“单流多对象”基准以消除流构造成本、AArch64 端复测、
+4. **进一步可做**：更长 iteration 的 CI 化基准、AArch64 端复测、
    `ObjectOutputStream.primVals` 写侧缓冲扩容复用、字符串/引用读路径联合优化。
+   （其中“单流多对象”基准已在评审跟进中补齐，见第七节。）
 
 ## 七、评审跟进（2026-09-10）
 
@@ -186,8 +193,8 @@ readFields() 返回给用户 GetField 的路径才需要 objHandles 供后续按
 |---|---|
 | `@Fork(1)` 噪声大，建议 3~5 | 基准标注改为 `@Fork(3)`，全部复测 |
 | 缺“单流多对象 + reset()”基准 | 新增 4 个基准：`serializeSameStream`、`serializeSameStreamReset`、`deserializeSameStream`、`deserializeSameStreamReset`（每 100 个对象 reset 一次） |
-| scratch 构造异常泄漏 / footprint 权衡 | 构造器内 try/catch 释放 scratch；在代码与本文档补充 footprint、多 slot 复用边界说明 |
-| 报告缺公开链接、含本地绝对路径 | 已补公开仓库与 commit 链接，移除本地绝对路径 |
+| scratch 构造异常泄漏 / footprint 权衡 | `FieldValues` 构造纳入 try/catch，构造失败即释放 scratch（commit `9daccd8f15`）；在代码与本文档补充 footprint、多 slot 复用边界说明 |
+| 报告缺公开链接、含本地绝对路径 | 已补公开仓库与 commit 链接，移除本地绝对路径（含 BASELINE.md 构建路径） |
 
 ### 7.1 复测结果（11 项，`@Fork(3)`，2 轮交替，每项 6×1s 测量×3 fork）
 

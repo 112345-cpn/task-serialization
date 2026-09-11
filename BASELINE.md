@@ -1,7 +1,7 @@
 # 任务 2.1 基线报告：Kona JDK 25 序列化性能基准
 
 日期：2026-08-28
-构建：`/home/test/TencentKona-25-master` `linux-x86_64-release`（openjdk 25.0.4-internal）
+构建：Kona JDK 25 源码，`linux-x86_64-release`（openjdk 25.0.4-internal）
 基准：JMH 1.37，`SerializationBench.java`（吞吐模式，3×1s 预热 + 5×1s 测量，Fork 1）
 环境：WSL2 x86_64，4 核 / 7.8 GiB 内存
 

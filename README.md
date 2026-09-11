@@ -19,20 +19,20 @@ JDK 源码改动在 Kona fork 仓库进行，本仓库存放基准、数据与�
 - `BASELINE.md`：任务 2.1 基线报告——基准设计、基线数据、profiler 实测热点、jtreg 结果
 - `PLAN-2.2.md`：任务 2.2 优化方案——基于实测热点定稿的三个优化项及验证流程
 - `OPTIMIZATION.md`：任务 2.2/2.3 优化报告——改动、逐项验证、JMH 结果与迭代分析
-- `bench/SerializationBench.java`：JMH 1.37 基准程序（7 个 benchmark，序列化/反序列化/往返分离）
+- `bench/SerializationBench.java`：JMH 1.37 基准程序（11 个 benchmark，序列化/反序列化/往返分离，含 4 个单流稳态场景）
 - `baseline-release.txt`：JMH 基线原始输出（release 构建）
 - `profile-stack.txt`：JMH `-prof stack` 采样原始输出
 - `jtreg-serializable.txt`：jtreg Serializable 测试摘要（150/150 Passed）
 - `results/2.2/`：任务 2.2/2.3 各轮 JMH 原始输出
 
 JDK 源码改动位于 Kona fork 仓库的 [`task-serialization`](https://github.com/112345-cpn/TencentKona-25/tree/task-serialization)
-分支（4 个提交），提交号见 `OPTIMIZATION.md`。
+分支（5 个提交，含 2026-09-10 的评审跟进提交），提交号见 `OPTIMIZATION.md`。
 
 ## 优化结论速览
 
 - 批量写（serializeOrders / 单流多对象 1000）：归一化后约 **+5~10%**（`reset()` 变体约 +10%）
 - 往返（roundtripOrders 1000）：约 **+2~7%**
-- 反序列化（deserializeOrders / 单流多对象）：吞吐约 +3~4%，**每操作分配 -24.1%**
+- 反序列化（deserializeOrders 1000）：吞吐约 **+3~4%**，**每操作分配 -24.1%**；单流多对象变体 +2.7%
 - serializeSingle：`@Fork(3)` 复测后归一化约 **-0.2%（中性）**；fork=1 时的负值是跨进程 JIT 噪声，见 OPTIMIZATION.md 第七节
 - jtreg：Serializable 150/150、ObjectInputStream 4/4、ObjectStreamClass 6/6 全部通过
 
@@ -55,8 +55,13 @@ bash configure && make jdk-image CONF=linux-x86_64-release
 # 2. 编译基准（javac 需启用注解处理器）
 javac -proc:full -cp jmh-core-1.37.jar SerializationBench.java
 
-# 3. 运行基线（吞吐模式，fork=1，3×1s 预热 + 5×1s 测量）
+# 3. 运行基准（吞吐模式，标注为 @Fork(3) + 3×1s 预热 + 5×1s 测量；
+#    报告的 9-10 日复测用 -f 3 -wi 2 -w 1s -i 6 -r 1s，
+#    serializeSingle 高精度专项用 -f 3 -wi 3 -w 1s -i 15 -r 2s）
 java -cp jmh-core-1.37.jar:classes org.openjdk.jmh.Main SerializationBench
+
+# 3b. 说明：2.1 基线时期为 fork=1（3×1s 预热 + 5×1s 测量），
+#     下表“基线速览”即该配置下的结果；改用多 fork 后可复现 OPTIMIZATION.md 第七节数据
 
 # 4. 热点采样（注意选项用分号分隔）
 java -cp jmh-core-1.37.jar:classes org.openjdk.jmh.Main SerializationBench -prof 'stack:lines=3;top=6'
