@@ -196,7 +196,49 @@ readFields() 返回给用户 GetField 的路径才需要 objHandles 供后续按
 | scratch 构造异常泄漏 / footprint 权衡 | `FieldValues` 构造纳入 try/catch，构造失败即释放 scratch（commit `9daccd8f15`）；在代码与本文档补充 footprint、多 slot 复用边界说明 |
 | 报告缺公开链接、含本地绝对路径 | 已补公开仓库与 commit 链接，移除本地绝对路径（含 BASELINE.md 构建路径） |
 
-### 7.1 复测结果（11 项，`@Fork(3)`，2 轮交替，每项 6×1s 测量×3 fork）
+### 7.1 改动明细
+
+#### 7.1.1 基准改造（`bench/SerializationBench.java`，本仓库 commit `41efbbd`）
+
+- `@Fork(1)` → `@Fork(3)`，把跨进程 JIT 编译差异纳入统计（评审最大弱点项）。
+- 新增 4 个“单流稳态”基准，直接覆盖优化 1/2/3 的目标场景：
+  `serializeSameStream`、`serializeSameStreamReset`、`deserializeSameStream`、
+  `deserializeSameStreamReset`。
+  - 实现：每次迭代复用同一条 `ObjectOutputStream`/`ObjectInputStream`，
+    连续写/读 1000 个 `Order`，返回值交给 Blackhole 消费（防 DCE）；
+  - Reset 变体每 100 个对象调用一次 `reset()`，即周期性清空 handle 表，
+    用于观察“缓存被清后重新建立”的行为是否正确且不劣化；
+  - 基准总数 7 → 11。
+
+#### 7.1.2 scratch 异常收口（Kona commit `9daccd8f15`，`ObjectInputStream.java`）
+
+- `FieldValues` 构造体中“分配 primValues/objValues + `readFully`/`readObject0` 循环”
+  整体纳入 `try`。
+- 新增 `catch (IOException | RuntimeException | Error e)`：若本次借用了 scratch
+  （`borrowed`），先置 `scratchInUse = false` 再原样 `throw`。
+  抛异常的流通常已不可用，但万一调用方恢复继续使用，也不会整条流永久失去复用。
+- 语义不变：成功路径与原实现逐语句等价，仅整体缩进进 `try`；
+  嵌套读取仍在 `scratchInUse` 保护下回退私有分配。
+
+#### 7.1.3 footprint 与多 slot 复用边界说明（同 commit + 本文档）
+
+- `scratchPrimValues` / `scratchObjValues` 字段注释补写：`scratchObjValues` 会持有
+  上一次反序列化对象的字段值引用，直到被后续读取覆盖或流不可达——这是
+  “分配 -24.1%” 取舍的另一面；“长生命周期流 + 只读少量对象”会推迟这批对象回收。
+- `readSerialData` 多 slot 延迟设值处注释补写：失败原子性模式下一次最多只有一个
+  尚未消费的 slot 能借用唯一一组 scratch，其余 slot 回退私有分配
+  （保证延迟设值期间数组不被覆盖）。
+
+#### 7.1.4 可复现性（本仓库 commit `41efbbd` / `db0e3c2`）
+
+- 补公开源码仓库地址与 5 个 commit 链接（见第一节）。
+- 移除全部本地绝对路径：`OPTIMIZATION.md`（构建目录、脚本目录）与
+  `BASELINE.md`（构建路径一栏的本机绝对路径，改为描述性表述）。
+- README 复现命令补上各轮实际 flags（`-f 3 -wi 2 -w 1s -i 6 -r 1s` 与专项
+  `-f 3 -wi 3 -w 1s -i 15 -r 2s`），并注明“基线速览”表为 fork=1 时期结果；
+  文档间项数（11）、提交数（5）、结论数值对齐。
+
+### 7.2 复测结果（11 项，`@Fork(3)`，2 轮交替，每项 6×1s 测量×3 fork）
 
 | Benchmark | 基线 ops/s | 最终 ops/s | 原始变化 | 对照归一化 |
 |---|---:|---:|---:|---:|
@@ -220,9 +262,9 @@ readFields() 返回给用户 GetField 的路径才需要 objHandles 供后续按
   `deserializeSameStream` +3~11%。
 - 与评审关注点一致：在“每 op 新建流”的 `serializeSingle` 上，
   fork=1 的早期高精度专项曾测得 -2.7%（归一化）~ -5.6%（原始）；
-  `@Fork(3)` 复测转为 +4~6%（见 7.2 专项复核）。
+  `@Fork(3)` 复测转为 +4~6%（见 7.3 专项复核）。
 
-### 7.2 serializeSingle 专项复核（fork=3，高迭代）
+### 7.3 serializeSingle 专项复核（fork=3，高迭代）
 
 针对评审最关心的“单对象回退是否真实”，用 `@Fork(3)` + 15×2s 测量做了 2 轮交替专项
 （`v2s-*`，每组 2 次；`serializeIntBox` 为同轮对照）：
